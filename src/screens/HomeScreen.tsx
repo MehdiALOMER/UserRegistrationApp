@@ -18,7 +18,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <SafeAreaWrapper>
-      <AppHeader title="Home" menu right="space-dashboard" onPressMenu={openDrawer} onRightPress={goDashboard} />
+      <AppHeader title="Chart" menu right="space-dashboard" onPressMenu={openDrawer} onRightPress={goDashboard} />
       <GenericView padding={dWidth * .0125} flex={1} marginBottom={dWidth * .15}>
 
         <LineChart

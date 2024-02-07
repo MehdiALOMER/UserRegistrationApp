@@ -4,28 +4,28 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Entypo from "react-native-vector-icons/Entypo";
 import { menuList } from '@/data/MenuList';
 import { colors, dWidth } from '@/constants';
-import { GenericText, GenericTouchableOpacity, GenericView } from '@/assets/css';
-
+import { GenericImage, GenericText, GenericTouchableOpacity, GenericView } from '@/assets/css';
+import logoImage from '@/assets/images/Logo-Test.png';
 
 export default function CustomDrawerContent(props: any) {
 
     const [generalMenuList, setGeneralMenuList] = useState(menuList);
 
     return (
-        <ScrollView>
+        <GenericView flex={1}>
             <GenericView flex={1}>
-                <GenericView flex={1}>
-                    <GenericView flexDirection="row" borderBottomWidth={1} borderBottomColor={colors.secondary}>
-                        <GenericView flex={1} center>
-                            {/*  <GenericImage
-                                width={dWidth * .25}
-                                height={dWidth * .25}
-                                resizeMode="contain"
-                                source={require("../assets/img/generic/logo.png")}
-                            /> */}
-                        </GenericView>
+                <GenericView flex={1} flexDirection="row" borderBottomWidth={1} borderBottomColor={colors.secondary}>
+                    <GenericView flex={1} center>
+                        <GenericImage
+                            width={dWidth * .25}
+                            height={dWidth * .25}
+                            resizeMode="contain"
+                            source={logoImage}
+                        />
                     </GenericView>
-                    <GenericView>
+                </GenericView>
+                <GenericView flex={6}>
+                    <ScrollView>
                         {
                             generalMenuList.map((item: any, index: number) => {
                                 return (
@@ -114,18 +114,20 @@ export default function CustomDrawerContent(props: any) {
                                 )
                             })
                         }
-                        <GenericTouchableOpacity
-                            onPress={() => {
-                            }}
-                            flexDirection="row" marginTop={dWidth * .05} marginBottom={dWidth * .05} >
-                            <Entypo name={"log-out"} size={25} color={colors.primary} />
-                            <GenericView marginLeft={dWidth * .05} justifyContent="center">
-                                <GenericText fontSize={15} bold>Çıkış</GenericText>
-                            </GenericView>
-                        </GenericTouchableOpacity>
-                    </GenericView>
+                    </ScrollView>
                 </GenericView>
-            </GenericView >
-        </ScrollView>
+                <GenericView flex={.5}>
+                    <GenericTouchableOpacity
+                        onPress={() => {
+                        }}
+                        marginLeft={dWidth * .05} flexDirection="row" >
+                        <Entypo name={"log-out"} size={25} color={colors.primary} />
+                        <GenericView marginLeft={dWidth * .05} justifyContent="center">
+                            <GenericText fontSize={15} bold>Çıkış</GenericText>
+                        </GenericView>
+                    </GenericTouchableOpacity>
+                </GenericView>
+            </GenericView>
+        </GenericView >
     )
 }

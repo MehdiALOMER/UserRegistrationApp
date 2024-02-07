@@ -4,7 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { colors } from '@/constants';
 import Icon from '@/components/shared/Icons';
 import { useNavigationContainerRef } from '@react-navigation/native';
-import { HomeScreen, ProjectList } from '@/screens';
+import { HomeScreen, CustomTable } from '@/screens';
 
 
 const BottomTab = createMaterialBottomTabNavigator();
@@ -15,11 +15,11 @@ export default function BottomTabNavigator() {
 
 
     const barColors = {
-        home: colors.primary,
-        cart: colors.black
+        chart: colors.primary,
+        table: colors.black
     };
 
-    const [tab, setTab] = React.useState<keyof typeof barColors>('home');
+    const [tab, setTab] = React.useState<keyof typeof barColors>('chart');
     const navRef = useNavigationContainerRef();
     React.useEffect(() => {
         const unsubscribe = navRef.addListener('state', () => {
@@ -47,22 +47,22 @@ export default function BottomTabNavigator() {
                 name="HomeScreen"
                 component={HomeScreen}
                 options={{
-                    tabBarColor: barColors.home,
-                    tabBarLabel: 'Home',
+                    tabBarColor: barColors.chart,
+                    tabBarLabel: 'Chart',
                     tabBarIcon: ({ focused }) => (
-                        <Icon name="home" size={35} color={focused == true ? colors.white : colors.gray} />
+                        <Icon name="chart-bar" size={30} color={focused == true ? colors.secondary : colors.gray} />
                     )
                 }}
             />
             <BottomTab.Screen
-                name="ProjectList"
-                component={ProjectList}
+                name="CustomTable"
+                component={CustomTable}
                 options={{
-                    tabBarColor: barColors.cart,
-                    tabBarLabel: 'Cart',
+                    tabBarColor: barColors.table,
+                    tabBarLabel: 'Table',
                     tabBarIcon: ({ focused }) => (
                         <>
-                            <Icon name="cart" size={35} color={focused == true ? colors.white : colors.gray} />
+                            <Icon name="table-large" size={30} color={focused == true ? colors.secondary : colors.gray} />
                         </>
                     )
                 }}
@@ -70,20 +70,3 @@ export default function BottomTabNavigator() {
         </BottomTab.Navigator>
     )
 }
-
-const styles = StyleSheet.create({
-    badge: {
-        position: 'absolute',
-        top: -14,
-        right: 3,
-        height: 24,
-        width: 24,
-        borderRadius: 12,
-        backgroundColor: colors.primary,
-        justifyContent: 'center',
-    },
-    badgeText: {
-        color: colors.white,
-        textAlign: 'center'
-    },
-})
