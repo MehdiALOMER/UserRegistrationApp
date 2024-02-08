@@ -1,16 +1,16 @@
-import { dWidth } from '@/constants';
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, Platform, PermissionsAndroid, ScrollView, TextInput } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Button, ScrollView } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
+import { useDispatch, useSelector } from 'react-redux';
+import CustomInput from '../shared/CustomInput';
+import { RootState } from "@/store"
+import { setUserCVAndProjects, addProject, removeProject } from '@/store/reducers';
+import { dWidth } from '@/constants';
+import { Project } from '@/types/userTypes';
 
-
-interface Project {
-    id: string;
-    title: string;
-    description: string;
-}
-
-const CVAndProjects = () => {
+const CVAndProjects: React.FC = () => {
+    const dispatch = useDispatch();
+    const userCVAndProjects = useSelector((state: RootState) => state.userInfoReducer.userCVAndProjects);
 
     const pickDocument = async () => {
         try {
@@ -24,9 +24,11 @@ const CVAndProjects = () => {
                 res[0].name,
                 res[0].size
             );
+
+            // CV'nin URI'sini Redux store'a kaydet
+            handleChange('cv', res[0].uri);
         } catch (err) {
             if (DocumentPicker.isCancel(err)) {
-                // Kullanıcı picker'ı iptal etti
                 console.log('Kullanıcı seçim işlemini iptal etti.');
             } else {
                 throw err;
@@ -34,57 +36,49 @@ const CVAndProjects = () => {
         }
     };
 
-    // Projelerin durumunu yönetmek için bir useState hook'u kullanıyoruz.
-    // Her proje için bir id (veya benzersiz bir anahtar), başlık ve açıklama içeren bir nesne listesi tutuyoruz.
-    const [projects, setProjects] = useState<Project[]>([]);
 
-    const addProject = () => {
-        // Yeni bir proje eklerken, mevcut projeler listesine yeni bir nesne ekliyoruz.
-        setProjects([
-            ...projects,
-            { id: Math.random().toString(), title: '', description: '' },
-        ]);
-    };
-    const deleteProject = (projectId: string) => {
-        // Belirli bir projeyi sildiğimizde, o projenin id'sine sahip olmayan projeleri filtreliyoruz.
-        setProjects(projects.filter(project => project.id !== projectId));
+
+    const handleChange = <T extends keyof typeof userCVAndProjects>(key: T, value: typeof userCVAndProjects[T]) => {
+        dispatch(setUserCVAndProjects({ ...userCVAndProjects, [key]: value }));
     };
 
-    const updateProject = (projectId: string, field: keyof Project, value: string) => {
-        // Projelerin başlık ve açıklamalarını güncellemek için
-        setProjects(projects.map(project => {
-            if (project.id === projectId) {
-                return { ...project, [field]: value };
-            }
-            return project;
-        }));
+    const handleProjectChange = (index: number, key: keyof Project, value: string) => {
+        const updatedProjects = [...userCVAndProjects.projects];
+        updatedProjects[index] = { ...updatedProjects[index], [key]: value };
+        handleChange('projects', updatedProjects);
+    };
+
+    const handleAddProject = () => {
+        dispatch(addProject({ id: Date.now(), title: "", description: "" })); // `id` için `Date.now()` kullanarak basit bir benzersiz değer ürettik
+    };
+
+    const handleRemoveProject = (index: number) => {
+        dispatch(removeProject(userCVAndProjects.projects[index].id));
     };
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.header}>CV ve Projeler Alanı</Text>
-            <Button title="CV Yükle" onPress={pickDocument} />
-            <Button title="Proje Ekle" onPress={addProject} />
-            {projects.map((project, index) => (
+            <Text style={styles.header}>CV and Projects</Text>
+            <Button title="Upload CV" onPress={pickDocument} />
+            <Button title="Add Project" onPress={handleAddProject} />
+            {userCVAndProjects.projects.map((project, index) => (
                 <View key={project.id} style={styles.projectContainer}>
-                    <TextInput
-                        placeholder="Proje Başlığı"
+                    <CustomInput
+                        label="Proje Başlığı"
                         value={project.title}
-                        onChangeText={(text) => updateProject(project.id, 'title', text)}
-                        style={styles.input}
+                        onChangeText={(text) => handleProjectChange(index, 'title', text)}
                     />
-                    <TextInput
-                        placeholder="Proje Açıklaması"
+                    <CustomInput
+                        label="Porje Açıklaması"
                         value={project.description}
-                        onChangeText={(text) => updateProject(project.id, 'description', text)}
-                        style={styles.input}
+                        onChangeText={(text) => handleProjectChange(index, 'description', text)}
                     />
-                    <Button title="Sil" onPress={() => deleteProject(project.id)} color="red" />
+                    <Button title="Delete" onPress={() => handleRemoveProject(index)} color="red" />
                 </View>
             ))}
         </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     contentContainer: {

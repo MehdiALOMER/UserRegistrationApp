@@ -1,4 +1,4 @@
 import { setLoading } from './loadingReducer';
-import { setUserInfo, setuserWorkingStatusAndProfessionInformation } from './userInfoReducer';
+import { setUserGeneralInfo, setUserWorkingStatusAndProfession, setUserEducationAndSkills, addCompetency, removeCompetency, setUserCVAndProjects, addProject, removeProject } from './userInfoReducer';
 
-export { setLoading, setUserInfo, setuserWorkingStatusAndProfessionInformation };
+export { setLoading, setUserGeneralInfo, setUserWorkingStatusAndProfession, setUserEducationAndSkills, addCompetency, removeCompetency, setUserCVAndProjects, addProject, removeProject };

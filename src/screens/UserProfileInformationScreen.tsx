@@ -1,27 +1,3 @@
-/* import React, { useEffect } from 'react';
-import Lottie from 'lottie-react-native'
-import { StorageService } from '@/utils/storage';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/store';
-import { getProductsThunk, setCartData, setFavoriteData } from '@/store/reducers';
-import { GenericText, GenericView } from '@/assets/css';
-
-
-const StarterScreen: React.FC = ({ navigation }: any) => {
-
-
-
-
-    return (
-        <GenericView>
-            <GenericText>Starter Screen</GenericText>
-        </GenericView>
-    );
-};
-
-export default StarterScreen;  */
-
-
 import { GenericText, GenericTouchableOpacity, GenericView } from '@/assets/css';
 import SafeAreaWrapper from '@/components/shared/SafeAreaWrapper';
 import CVAndProjects from '@/components/userProfileInformation/CVAndProjects';
@@ -29,7 +5,7 @@ import EducationAndSkills from '@/components/userProfileInformation/EducationAnd
 import WorkAndProfession from '@/components/userProfileInformation/WorkAndProfession';
 import { colors, dWidth } from '@/constants';
 import React, { useState, useRef, ComponentType, ReactElement } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Dimensions, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
 
 interface TabDataItem {
     key: string;

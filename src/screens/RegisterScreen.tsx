@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet, TouchableOpacity, Image, Platform, ScrollView, Modal } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { View, Button, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import * as ImagePicker from 'react-native-image-picker';
@@ -10,11 +9,16 @@ import SafeAreaWrapper from '@/components/shared/SafeAreaWrapper';
 import { GenericImage, GenericText, GenericTouchableOpacity, GenericView } from '@/assets/css';
 import CustomDatePicker from '@/components/shared/CustomDatePicker';
 import { colors, dWidth } from '@/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserGeneralInfo } from '@/store/reducers';
+import { RootState } from "@/store"
 
 
 
 const RegisterScreen: React.FC = ({ navigation }: any) => {
-    const [selectedImage, setSelectedImage] = useState(null);
+    const dispatch = useDispatch();
+    const userGeneralInfo = useSelector((state: RootState) => state.userInfoReducer.userGeneralInfo);
+
     const [modalVisible, setModalVisible] = useState(false);
     const [isPickerShow, setIsPickerShow] = useState(false);
 
@@ -33,25 +37,25 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else if (response.assets && response.assets.length > 0) {
-                const source: any = { uri: response.assets[0].uri };
-                setSelectedImage(source);
+                const source = response.assets[0].uri;
+                dispatch(setUserGeneralInfo({ ...userGeneralInfo, selectedImage: source }));
             }
         });
     };
 
     const genderOptions = [
-        { label: 'Erkek', value: 'male' },
-        { label: 'Kadın', value: 'female' },
-        { label: 'Belirtmek İstemiyorum', value: 'not_specified' },
+        { label: 'Erkek', value: 'Erkek' },
+        { label: 'Kadın', value: 'Kadın' },
+        { label: 'Belirtmek İstemiyorum', value: 'Belirtmek İstemiyorum' }
     ];
 
     const countryOptions = [
-        { label: 'Türkiye', value: 'tr' },
-        { label: 'Amerika Birleşik Devletleri', value: 'us' }
+        { label: 'Türkiye', value: 'Türkiye' },
+        { label: 'Amerika Birleşik Devletleri', value: 'Amerika Birleşik Devletleri' }
     ];
     const cityOptions = [
-        { label: 'İstanbul', value: 'istanbul' },
-        { label: 'Ankara', value: 'ankara' }
+        { label: 'İstanbul', value: 'Istanbul' },
+        { label: 'Ankara', value: 'Ankara' }
     ];
 
     const initialValues = {
@@ -81,7 +85,20 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(values) => console.log(values)}
+                onSubmit={(values) => {
+                    // userGeneralInfo Redux state'inden selectedImage değerini al
+                    const selectedImage = userGeneralInfo.selectedImage;
+
+                    const payload = {
+                        ...values,
+                        birthDate: values.birthDate.toISOString(), // Tarihi string'e dönüştür
+                        selectedImage, // selectedImage değerini payload'a ekle
+                    };
+
+                    dispatch(setUserGeneralInfo(payload)); // Düzeltilmiş payload ile dispatch
+
+                    navigation.navigate('UserProfileInformationScreen')  // Navigate to next screen
+                }}
             >
                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
                     <ScrollView>
@@ -89,8 +106,8 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                             <GenericView center>
                                 <GenericTouchableOpacity onPress={pickImage}>
                                     <GenericView>
-                                        {selectedImage ? (
-                                            <GenericImage source={selectedImage} width={100} height={100} borderRadius={50} resizeMode="cover" />
+                                        {userGeneralInfo.selectedImage ? (
+                                            <GenericImage source={{ uri: userGeneralInfo.selectedImage }} width={100} height={100} borderRadius={50} resizeMode="cover" />
                                         ) : (
                                             <GenericView borderWidth={1} borderRadius={50} width={100} height={100} justifyContent='center' alignItems='center'>
                                                 <GenericText>Resim Seç</GenericText>
@@ -178,8 +195,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                             </GenericView>
                             <GenericView marginTop={dWidth * .025} center>
                                 <GenericTouchableOpacity
-                                    /* onPress={() => handleSubmit()} */
-                                    onPress={() => navigation.navigate('UserProfileInformationScreen')}
+                                    onPress={() => handleSubmit()}
                                 >
                                     <GenericView backgroundColor={colors.primary} padding={15} borderRadius={5} >
                                         <GenericText color={colors.white} bold>Devam</GenericText>

@@ -1,34 +1,31 @@
-import React, { useState } from 'react';
-import { dWidth } from '@/constants';
-import { GenericText, GenericView } from '@/assets/css';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { GenericView, GenericText } from '@/assets/css';
 import CustomPicker from '../shared/CustomPicker';
-import { IUserWorkingStatusAndProfessionInformation } from '@/types/dataTypes';
+import { RootState } from "@/store"
+import { dWidth } from '@/constants';
+import { setUserWorkingStatusAndProfession } from '@/store/reducers';
 
-const WorkAndProfession = () => {
-    const [userWorkAndProfession, setUserWorkAndProfession] = useState<IUserWorkingStatusAndProfessionInformation>({
-        "WorkingStatus": "",
-        "Profession": "",
-    });
+const WorkAndProfession: React.FC = () => {
+    const dispatch = useDispatch();
+    const userWorkAndProfession = useSelector((state: RootState) => state.userInfoReducer.userWorkingStatusAndProfession);
 
     const workStatusOptions = [
-        { label: 'Çalışıyor', value: 'working' },
-        { label: 'Öğrenci', value: 'student' },
-        { label: 'İşsiz', value: 'unemployed' },
-        { label: 'Emekli', value: 'retired' },
+        { label: 'Çalışıyor', value: 'Çalışıyor' },
+        { label: 'Öğrenci', value: 'Öğrenci' },
+        { label: 'İşsiz', value: 'İşsiz' },
+        { label: 'Emekli', value: 'Emekli' },
     ];
     const professionOptions = [
-        { label: 'Yazılımcı', value: 'Software Developer' },
-        { label: 'Doktor', value: 'Doctor' },
-        { label: 'Mühendis', value: 'Engineer' },
-        { label: 'Öğretmen', value: 'Teacher' },
+        { label: 'Yazılımcı', value: 'Yazılımcı' },
+        { label: 'Doktor', value: 'Doktor' },
+        { label: 'Mühendis', value: 'Mühendis' },
+        { label: 'Öğretmen', value: 'Öğretmen' },
     ];
 
-    const handleChange = (key: string, value: string) => {
-        setUserWorkAndProfession(prevState => ({
-            ...prevState,
-            [key]: value,
-        }));
-    }
+    const handleChange = (key: keyof typeof userWorkAndProfession, value: string) => {
+        dispatch(setUserWorkingStatusAndProfession({ ...userWorkAndProfession, [key]: value }));
+    };
 
     return (
         <GenericView width={dWidth} padding={dWidth * 0.025} flex={1}>
@@ -37,22 +34,23 @@ const WorkAndProfession = () => {
             </GenericView>
             <GenericView marginTop={dWidth * 0.05}>
                 <CustomPicker
-                    value={userWorkAndProfession.WorkingStatus}
+                    value={userWorkAndProfession.workingStatus}
+                    onValueChange={(value) => handleChange('workingStatus', value)}
                     items={workStatusOptions}
-                    onValueChange={(value) => handleChange('Working Status', value)}
-                    placeholder={{ label: 'Çalışma durumu seçin...', value: null }}
+                    placeholder={{ label: 'Çalışma durumu seçin...', value: '' }}
                 />
             </GenericView>
             <GenericView marginTop={dWidth * 0.05}>
                 <CustomPicker
-                    value={userWorkAndProfession.Profession}
+                    value={userWorkAndProfession.profession}
+                    onValueChange={(value) => handleChange('profession', value)}
                     items={professionOptions}
-                    onValueChange={(value) => handleChange('Profession', value)}
-                    placeholder={{ label: 'Meslek seçin...', value: null }}
+                    placeholder={{ label: 'Meslek seçin...', value: '' }}
                 />
             </GenericView>
         </GenericView>
     );
-}
+};
 
 export default WorkAndProfession;
+

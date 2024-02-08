@@ -1,54 +1,42 @@
-import React, { useState } from 'react';
-import { ScrollView, Button, View, TextInput, StyleSheet } from 'react-native';
+import React from 'react';
+import { ScrollView, View, Button } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { GenericText, GenericView } from '@/assets/css';
-import { dWidth } from '@/constants';
 import CustomPicker from '../shared/CustomPicker';
 import CustomInput from '../shared/CustomInput';
-import { IUserEducationLevelAndCompetencyInformation } from '@/types/dataTypes';
+import { setUserEducationAndSkills, addCompetency, removeCompetency } from '@/store/reducers';
+import { RootState } from "@/store"
+import { Competency } from '@/types/userTypes';
+import { dWidth } from '@/constants';
 
-const EducationAndSkills = () => {
-    const [userEducationAndSkills, setUserEducationAndSkills] = useState<IUserEducationLevelAndCompetencyInformation>({
-        EducationLevel: "",
-        SchoolName: "",
-        Department: "",
-        GraduationYear: "",
-        Competencies: [{ id: Math.random(), skill: "", level: "" }],
-    });
+const EducationAndSkills: React.FC = () => {
+    const dispatch = useDispatch();
+    const userEducationAndSkills = useSelector((state: RootState) => state.userInfoReducer.userEducationAndSkills);
 
     const educationLevelOptions = [
-        { label: 'Lise', value: 'High School' },
-        { label: 'Ön Lisans', value: 'Associate Degree' },
-        { label: 'Lisans', value: 'Bachelor Degree' },
-        { label: 'Yüksek Lisans', value: 'Master Degree' },
-        { label: 'Doktora', value: 'Doctorate Degree' },
+        { label: 'Lise', value: 'Lise' },
+        { label: 'Ön Lisans', value: 'Ön Lisans' },
+        { label: 'Lisans', value: 'Lisans' },
+        { label: 'Yüksek Lisans', value: 'Yüksek Lisans' },
+        { label: 'Doktora', value: 'Doktora' },
     ];
 
-    const handleChange = (key: string, value: string | any[]) => {
-        setUserEducationAndSkills(prevState => ({
-            ...prevState,
-            [key]: value,
-        }));
+    const handleChange = <T extends keyof typeof userEducationAndSkills>(key: T, value: typeof userEducationAndSkills[T]) => {
+        dispatch(setUserEducationAndSkills({ ...userEducationAndSkills, [key]: value }));
     };
 
-    const handleCompetencyChange = (index: number, key: string, value: string) => {
-        const updatedCompetencies = [...userEducationAndSkills.Competencies];
-        updatedCompetencies[index] = {
-            ...updatedCompetencies[index],
-            [key]: value,
-        };
-        handleChange('Competencies', updatedCompetencies);
+    const handleCompetencyChange = (index: number, key: keyof Competency, value: string) => {
+        const updatedCompetencies = [...userEducationAndSkills.competencies];
+        updatedCompetencies[index] = { ...updatedCompetencies[index], [key]: value };
+        handleChange('competencies', updatedCompetencies);
     };
 
-    const addCompetency = () => {
-        handleChange('Competencies', [
-            ...userEducationAndSkills.Competencies,
-            { id: Math.random(), skill: "", level: "" },
-        ]);
+    const handleAddCompetency = () => {
+        dispatch(addCompetency({ id: Date.now(), skill: "", level: "" })); // `id` için `Date.now()` kullanarak basit bir benzersiz değer ürettik
     };
 
-    const removeCompetency = (index: number) => {
-        const filteredCompetencies = userEducationAndSkills.Competencies.filter((_, idx) => idx !== index);
-        handleChange('Competencies', filteredCompetencies);
+    const handleRemoveCompetency = (index: number) => {
+        dispatch(removeCompetency(userEducationAndSkills.competencies[index].id));
     };
 
     return (
@@ -58,35 +46,34 @@ const EducationAndSkills = () => {
             </GenericView>
             <GenericView marginTop={dWidth * 0.05}>
                 <CustomPicker
-                    value={userEducationAndSkills.EducationLevel}
+                    value={userEducationAndSkills.educationLevel}
+                    onValueChange={(value) => handleChange('educationLevel', value)}
                     items={educationLevelOptions}
-                    onValueChange={(value) => handleChange('EducationLevel', value)}
-                    placeholder={{ label: 'Eğitime seviyesi seçin...', value: null }}
+                    placeholder={{ label: 'Eğitim seviyesi seçin...', value: '' }}
                 />
             </GenericView>
             <GenericView marginTop={dWidth * .05}>
                 <CustomInput
                     label="Okul Adı"
-                    value={userEducationAndSkills.SchoolName}
-                    onChangeText={(text) => handleChange('SchoolName', text)}
+                    value={userEducationAndSkills.schoolName}
+                    onChangeText={(text) => handleChange('schoolName', text)}
                 />
             </GenericView>
             <GenericView marginTop={dWidth * .05}>
                 <CustomInput
                     label="Bölüm"
-                    value={userEducationAndSkills.Department}
-                    onChangeText={(text) => handleChange('Department', text)}
+                    value={userEducationAndSkills.department}
+                    onChangeText={(text) => handleChange('department', text)}
                 />
             </GenericView>
             <GenericView marginTop={dWidth * .05}>
                 <CustomInput
                     label="Mezuniyet Yılı"
-                    value={userEducationAndSkills.GraduationYear}
-                    onChangeText={(text) => handleChange('GraduationYear', text)}
+                    value={userEducationAndSkills.graduationYear}
+                    onChangeText={(text) => handleChange('graduationYear', text)}
                 />
             </GenericView>
-
-            {userEducationAndSkills.Competencies.map((competency, index) => (
+            {userEducationAndSkills.competencies.map((competency, index) => (
                 <View key={competency.id}>
                     <CustomInput
                         label="Yetkinlik"
@@ -98,13 +85,12 @@ const EducationAndSkills = () => {
                         value={competency.level}
                         onChangeText={(text) => handleCompetencyChange(index, 'level', text)}
                     />
-                    <Button title="Yetkinliği Kaldır" onPress={() => removeCompetency(index)} />
+                    <Button title="Yetkinliği Kaldır" onPress={() => handleRemoveCompetency(index)} />
                 </View>
             ))}
-            <Button title="Yetkinlik Ekle" onPress={addCompetency} />
+            <Button title="Yetkinlik Ekle" onPress={handleAddCompetency} />
         </ScrollView>
     );
 };
 
 export default EducationAndSkills;
-
