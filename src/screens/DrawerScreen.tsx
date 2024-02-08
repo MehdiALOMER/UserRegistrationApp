@@ -6,9 +6,12 @@ import AppHeader from '@/components/shared/AppHeader';
 
 const DrawerScreen: React.FC = ({ navigation }: any) => {
 
+    const onPressBack = () => {
+        navigation.goBack();
+    }
     return (
         <SafeAreaWrapper>
-            <AppHeader title="DrawerScreen" />
+            <AppHeader title="DrawerScreen" onPressBack={onPressBack} back />
             <GenericView flex={1}>
                 <GenericText>DrawerScreen</GenericText>
             </GenericView>

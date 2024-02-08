@@ -10,6 +10,8 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Foundation from 'react-native-vector-icons/Foundation';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 
 export enum Icons {
@@ -25,6 +27,8 @@ export enum Icons {
     Octicons = 'Octicons',
     Foundation = 'Foundation',
     EvilIcons = 'EvilIcons',
+    Fontisto = 'Fontisto',
+    FontAwesome6 = 'FontAwesome6',
 }
 
 type IconType =
@@ -39,7 +43,9 @@ type IconType =
     | 'SimpleLineIcons'
     | 'Octicons'
     | 'Foundation'
-    | 'EvilIcons';
+    | 'EvilIcons'
+    | 'Fontisto'
+    | 'FontAwesome6';
 
 interface IconProps {
     name: string;
@@ -86,6 +92,10 @@ const Icon: React.FC<IconProps> = ({
                 return Foundation;
             case 'EvilIcons':
                 return EvilIcons;
+            case 'Fontisto':
+                return Fontisto;
+            case 'FontAwesome6':
+                return FontAwesome6;
             default:
                 return MaterialCommunityIcons;
         }

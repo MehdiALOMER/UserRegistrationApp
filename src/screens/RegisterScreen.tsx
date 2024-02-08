@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -10,7 +10,7 @@ import { GenericImage, GenericText, GenericTouchableOpacity, GenericView } from 
 import CustomDatePicker from '@/components/shared/CustomDatePicker';
 import { colors, dWidth } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserGeneralInfo } from '@/store/reducers';
+import { setUserGeneralInfo, getAllCountriesThunk } from '@/store/reducers';
 import { RootState } from "@/store"
 
 
@@ -18,6 +18,15 @@ import { RootState } from "@/store"
 const RegisterScreen: React.FC = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const userGeneralInfo = useSelector((state: RootState) => state.userInfoReducer.userGeneralInfo);
+    const countryList = useSelector((state: RootState) => state.globalReducer.countryList);
+
+    useEffect(() => {
+        getCountries();
+    }, []);
+
+    const getCountries = () => {
+        dispatch<any>(getAllCountriesThunk());
+    };
 
     const [modalVisible, setModalVisible] = useState(false);
     const [isPickerShow, setIsPickerShow] = useState(false);
@@ -126,12 +135,17 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                                     touched={touched} />
                             </GenericView>
                             <GenericView marginTop={dWidth * .025}>
-                                <CustomPicker
-                                    items={countryOptions}
-                                    onValueChange={(value) => handleChange('country')(value)}
-                                    placeholder={{ label: 'Ülke seçin...', value: null }}
-                                />
-                                {touched.country && errors.country && <GenericText color={colors.error}>{errors.country}</GenericText>}
+                                {
+                                    countryList.length > 0 ? (
+                                        <>
+                                            <CustomPicker
+                                                items={countryList}
+                                                onValueChange={(value) => handleChange('country')(value)}
+                                                placeholder={{ label: 'Ülke seçin...', value: null }}
+                                            />
+                                            {touched.country && errors.country && <GenericText color={colors.error}>{errors.country}</GenericText>}</>
+                                    ) : null
+                                }
                             </GenericView>
                             <GenericView marginTop={dWidth * .025}>
                                 <CustomPicker

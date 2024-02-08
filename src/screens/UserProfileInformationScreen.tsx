@@ -6,6 +6,9 @@ import WorkAndProfession from '@/components/userProfileInformation/WorkAndProfes
 import { colors, dWidth } from '@/constants';
 import React, { useState, useRef, ComponentType, ReactElement } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from "@/store"
+import { StorageService } from '@/utils/storage';
 
 interface TabDataItem {
     key: string;
@@ -29,6 +32,8 @@ const UserProfileInformationScreen: React.FC = ({ navigation }: any) => {
         flatListRef.current?.scrollToIndex({ animated: true, index: index });
     };
 
+
+
     const renderTab = ({ item, index }: { item: any, index: number }) => (
         <TouchableOpacity
             style={[styles.tab, activeIndex === index && styles.activeTab]}
@@ -42,6 +47,12 @@ const UserProfileInformationScreen: React.FC = ({ navigation }: any) => {
         const Component = item.component;
         return <Component />;
     };
+    const userInfo = useSelector((state: RootState) => state.userInfoReducer);
+    // userInfo objesini async storage'a kaydetme
+    const saveData = (data: any) => {
+        const jsonValue = JSON.stringify(data);
+        StorageService.setItem('userInfo', jsonValue);
+    }
 
     return (
         <SafeAreaWrapper>
@@ -56,7 +67,10 @@ const UserProfileInformationScreen: React.FC = ({ navigation }: any) => {
                         style={styles.tabsContainer}
                     />
                     <GenericView center>
-                        <GenericTouchableOpacity onPress={() => navigation.navigate('DrawerNavigator')}>
+                        <GenericTouchableOpacity onPress={() => {
+                            saveData(userInfo);
+                            navigation.navigate('DrawerNavigator');
+                        }}>
                             <GenericView backgroundColor={colors.primary} padding={15} borderRadius={5} >
                                 <GenericText color={colors.white} bold>Devam</GenericText>
                             </GenericView>

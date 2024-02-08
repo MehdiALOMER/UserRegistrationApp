@@ -1,11 +1,11 @@
 import { ApiConstant } from "@/constants/apiConstant";
 import { NetworkManager } from "@/utils/network/networkManager";
 
-export class ProductService {
+export class GlobalService {
 
-    static async getProducts() {
+    static async getAllCountries() {
         try {
-            let response = await NetworkManager.get(ApiConstant.productsUrl);
+            let response = await NetworkManager.get(ApiConstant.getAllCountries);
             return response;
         } catch (error) {
             return Promise.reject(error);

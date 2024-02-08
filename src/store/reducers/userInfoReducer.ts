@@ -36,7 +36,6 @@ const userInfoSlice = createSlice({
     reducers: {
         setUserGeneralInfo: (state, action: PayloadAction<UserGeneralInfo>) => {
             state.userGeneralInfo = { ...state.userGeneralInfo, ...action.payload };
-            console.log("userGeneralInfo ::::: ", state.userGeneralInfo);
         },
         setUserEducationAndSkills: (state, action: PayloadAction<EducationAndSkills>) => {
             state.userEducationAndSkills = { ...state.userEducationAndSkills, ...action.payload };
