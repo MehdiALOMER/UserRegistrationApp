@@ -134,7 +134,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                                     errors={errors}
                                     touched={touched} />
                             </GenericView>
-                            <GenericView marginTop={dWidth * .025}>
+                            <GenericView /* marginTop={dWidth * .025} */>
                                 {
                                     countryList.length > 0 ? (
                                         <>
@@ -165,7 +165,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                                     touched={touched}
                                 />
                             </GenericView>
-                            <GenericView marginTop={dWidth * .025}>
+                            <GenericView /* marginTop={dWidth * .025} */>
                                 <CustomInput
                                     label="Telefon Numarası"
                                     value={values.phoneNumber}
@@ -176,7 +176,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                                     touched={touched}
                                 />
                             </GenericView>
-                            <GenericView borderWidth={1} borderRadius={5} padding={15} marginTop={dWidth * .025}>
+                            <GenericView borderWidth={1} borderRadius={5} padding={15} /* marginTop={dWidth * .025} */>
                                 <GenericText onPress={() => setIsPickerShow(true)}>Doğum Tarihi: {values.birthDate.toDateString()}</GenericText>
                                 {isPickerShow && (
                                     <CustomDatePicker
@@ -198,7 +198,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
                                     placeholder={{ label: 'Cinsiyet seçin...', value: null }}
                                 />
                             </GenericView>
-                            <GenericView marginTop={dWidth * .025} flexDirection='row' alignItems='center'>
+                            <GenericView marginTop={dWidth * .03} flexDirection='row' alignItems='center'>
                                 <TouchableOpacity
                                     style={styles.checkbox}
                                     onPress={() => setFieldValue('kvkkApproval', !values.kvkkApproval)}

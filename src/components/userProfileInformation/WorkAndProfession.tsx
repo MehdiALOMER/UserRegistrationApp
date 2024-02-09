@@ -30,7 +30,7 @@ const WorkAndProfession: React.FC = () => {
     return (
         <GenericView width={dWidth} padding={dWidth * 0.025} flex={1}>
             <GenericView center marginTop={dWidth * 0.05}>
-                <GenericText bold>Çalışma Durumu ve Meslek Bilgileri</GenericText>
+                <GenericText bold fontSize={16}>Çalışma Durumu ve Meslek Bilgileri</GenericText>
             </GenericView>
             <GenericView marginTop={dWidth * 0.05}>
                 <CustomPicker

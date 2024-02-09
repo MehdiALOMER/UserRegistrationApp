@@ -7,7 +7,11 @@ import store from '@/store';
 const App = () => {
 
   useEffect(() => {
-    LogBox.ignoreLogs(['In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.']);
+    LogBox.ignoreLogs([
+      'RCTBridge required dispatch_sync to load RCTAccessibilityManager. This may lead to deadlocks',
+      'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
+      'Warning: Failed prop type: Invalid prop `textStyle` of type `array` supplied to `Cell`, expected `object`'
+    ]);
   }, []);
 
 

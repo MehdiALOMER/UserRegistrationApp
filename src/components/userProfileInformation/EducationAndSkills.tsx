@@ -1,13 +1,13 @@
 import React from 'react';
-import { ScrollView, View, Button } from 'react-native';
+import { ScrollView, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { GenericText, GenericView } from '@/assets/css';
+import { GenericText, GenericTouchableOpacity, GenericView } from '@/assets/css';
 import CustomPicker from '../shared/CustomPicker';
 import CustomInput from '../shared/CustomInput';
 import { setUserEducationAndSkills, addCompetency, removeCompetency } from '@/store/reducers';
 import { RootState } from "@/store"
 import { Competency } from '@/types/userTypes';
-import { dWidth } from '@/constants';
+import { colors, dWidth } from '@/constants';
 
 const EducationAndSkills: React.FC = () => {
     const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const EducationAndSkills: React.FC = () => {
     return (
         <ScrollView contentContainerStyle={{ padding: dWidth * 0.025 }} style={[{ width: dWidth }]}>
             <GenericView center marginTop={dWidth * 0.05}>
-                <GenericText bold>Eğitim Seviyesi ve Yetkinlik Bilgileri</GenericText>
+                <GenericText bold fontSize={16}>Eğitim Seviyesi ve Yetkinlik Bilgileri</GenericText>
             </GenericView>
             <GenericView marginTop={dWidth * 0.05}>
                 <CustomPicker
@@ -73,8 +73,19 @@ const EducationAndSkills: React.FC = () => {
                     onChangeText={(text) => handleChange('graduationYear', text)}
                 />
             </GenericView>
+            <GenericView alignItems='flex-end' padding={dWidth * .025} borderBottomWidth={1} borderBottomColor='#cccccc'>
+                <GenericTouchableOpacity
+                    onPress={handleAddCompetency}
+                    center
+                    padding={dWidth * .025}
+                    backgroundColor={colors.primary}
+                    borderRadius={10}
+                >
+                    <GenericText fontSize={15} color={colors.white} bold>Yetkinlik Ekle</GenericText>
+                </GenericTouchableOpacity>
+            </GenericView>
             {userEducationAndSkills.competencies.map((competency, index) => (
-                <View key={competency.id}>
+                <GenericView key={competency.id} padding={dWidth * .025} borderBottomWidth={1} borderBottomColor="#cccccc">
                     <CustomInput
                         label="Yetkinlik"
                         value={competency.skill}
@@ -85,10 +96,19 @@ const EducationAndSkills: React.FC = () => {
                         value={competency.level}
                         onChangeText={(text) => handleCompetencyChange(index, 'level', text)}
                     />
-                    <Button title="Yetkinliği Kaldır" onPress={() => handleRemoveCompetency(index)} />
-                </View>
+                    <GenericView center marginTop={dWidth * .025}>
+                        <GenericTouchableOpacity
+                            onPress={() => handleRemoveCompetency(index)}
+                            backgroundColor={'red'}
+                            center
+                            padding={dWidth * .025}
+                            borderRadius={10}
+                        >
+                            <GenericText color={colors.white} bold>Yetkinliği Sil</GenericText>
+                        </GenericTouchableOpacity>
+                    </GenericView>
+                </GenericView>
             ))}
-            <Button title="Yetkinlik Ekle" onPress={handleAddCompetency} />
         </ScrollView>
     );
 };

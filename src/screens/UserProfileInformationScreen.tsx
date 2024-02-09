@@ -5,7 +5,7 @@ import EducationAndSkills from '@/components/userProfileInformation/EducationAnd
 import WorkAndProfession from '@/components/userProfileInformation/WorkAndProfession';
 import { colors, dWidth } from '@/constants';
 import React, { useState, useRef, ComponentType, ReactElement } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ListRenderItemInfo, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from "@/store"
 import { StorageService } from '@/utils/storage';
@@ -57,25 +57,25 @@ const UserProfileInformationScreen: React.FC = ({ navigation }: any) => {
     return (
         <SafeAreaWrapper>
             <View style={styles.container}>
-                <GenericView flexDirection='row'>
-                    <FlatList
-                        data={data}
-                        renderItem={renderTab}
-                        keyExtractor={(item) => item.key}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.tabsContainer}
-                    />
-                    <GenericView center>
+                <GenericView flexDirection='row' justifyContent='space-between' alignItems='center'>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
+                        <FlatList
+                            data={data}
+                            renderItem={renderTab}
+                            keyExtractor={(item) => item.key}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        />
                         <GenericTouchableOpacity onPress={() => {
                             saveData(userInfo);
                             navigation.navigate('DrawerNavigator');
                         }}>
-                            <GenericView backgroundColor={colors.primary} padding={15} borderRadius={5} >
+                            <GenericView backgroundColor={colors.secondary} padding={dWidth * .05}>
                                 <GenericText color={colors.white} bold>Devam</GenericText>
                             </GenericView>
                         </GenericTouchableOpacity>
-                    </GenericView>
+                    </ScrollView>
+
                 </GenericView>
 
                 <FlatList
